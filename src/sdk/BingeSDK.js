@@ -5,8 +5,16 @@ class BingeSDK {
   }
 
   async getTrendingContent() {
-    const response = await fetch(`${this.baseUrl}/trending`);
-    return response.json();
+    try {
+      const response = await fetch(`${this.baseUrl}/trending`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text(); // Parse response as plain text (HTML)
+    } catch (error) {
+      console.error("Error fetching trending content:", error);
+      throw error;
+    }
   }
 
   getRedirectLink(contentId) {

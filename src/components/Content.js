@@ -9,7 +9,6 @@ const Content = () => {
     <div>
       <h1>Playing Content</h1>
       <p>You're watching content ID: {id}</p>
-      {/* Here you can embed a video player or further details */}
     </div>
   );
 };
