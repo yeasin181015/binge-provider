@@ -8,6 +8,14 @@ const App = () => (
   <Router>
     <Routes>
       <Route
+        path="/"
+        element={
+          <div>
+            <p>Hello</p>
+          </div>
+        }
+      />
+      <Route
         path="/trending"
         element={
           <div>
