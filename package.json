@@ -1,6 +1,6 @@
 {
   "name": "binge-provider",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Binge provider for trending component",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
