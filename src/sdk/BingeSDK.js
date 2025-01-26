@@ -31,8 +31,8 @@ export class BingeSDK {
 }
 
 export function createTrendingComponent(sdk) {
-  return () => {
-    const data = sdk.getTrendingContent();
+  return async () => {
+    const data = await sdk.getTrendingContent();
     console.log(data);
     return <Trending data={data} />;
   };

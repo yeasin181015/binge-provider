@@ -1,3 +1,3 @@
-// src/index.js
-export { BingeSDK } from "./sdk/BingeSDK";
-export { createTrendingComponent } from "./sdk/BingeSDK";
+import Trending from "./components/Trending";
+
+export { Trending as TrendingComponent };
