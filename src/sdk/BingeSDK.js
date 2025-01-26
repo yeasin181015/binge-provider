@@ -1,25 +1,24 @@
 // src/sdk/BingeSDK.js
-class BingeSDK {
-  constructor({ baseUrl }) {
-    this.baseUrl = baseUrl || "http://localhost:3000";
-  }
-
+// src/sdk/BingeSDK.js
+export class BingeSDK {
   async getTrendingContent() {
-    try {
-      const response = await fetch(`${this.baseUrl}/trending`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text(); // Parse response as plain text (HTML)
-    } catch (error) {
-      console.error("Error fetching trending content:", error);
-      throw error;
-    }
-  }
+    // Mock API response
+    const data = [
+      { id: 1, title: 'Trending Item 1', description: 'This is a trending item' },
+      { id: 2, title: 'Trending Item 2', description: 'This is another trending item' },
+      { id: 3, title: 'Trending Item 3', description: 'This is yet another trending item' },
+    ];
 
-  getRedirectLink(contentId) {
-    return `${this.baseUrl}/content/${contentId}`;
+    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    return data;
   }
 }
 
-export default BingeSDK;
+export function createTrendingComponent(sdk) {
+  return () => {
+    const data = sdk.getTrendingContent();
+    return <Trending data={data} />;
+  };
+}
