@@ -1,0 +1,10 @@
+*.map
+src/
+*.test.js
+*.spec.js
+.git
+.gitignore
+.editorconfig
+.npmrc
+rollup.config.js
+package-lock.json
