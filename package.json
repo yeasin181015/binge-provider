@@ -1,0 +1,46 @@
+{
+  "name": "binge-provider",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-url": "^8.0.2",
+    "@types/js-cookie": "^3.0.6",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-image": "^1.0.2",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@babel/preset-react": "^7.26.3",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^5.16.14",
+    "@mui/material": "^5.10.0",
+    "@mui/styles": "^5.14.11",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@types/crypto-js": "^4.2.2",
+    "crypto-js": "^4.2.0",
+    "firebase": "^11.2.0",
+    "js-cookie": "^3.0.5",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-env": "^0.21.4",
+    "tslib": "^2.8.1"
+  }
+}
