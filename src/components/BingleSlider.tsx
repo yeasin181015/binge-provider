@@ -1,11 +1,9 @@
-import React from "react";
-import { useQuery } from "react-query";
+import React, { useEffect, useState } from "react";
 import WatchIcon from "../icons/WatchIcon";
 import { Box, Button } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 import SliderRowForGenre from "./SliderRowForGenre";
 import { fetchCategories } from "../apis/fetchCategories";
-import { GetCookiesValue } from "../utils/cookie";
-// import { apiSettings } from "../config/apiSettings";
 
 export interface CategoryProps {
   id?: number;
@@ -23,19 +21,46 @@ export interface CategoryProps {
   target_user?: number;
 }
 
-const BingeSlider = ({ token }: { token: string }) => {
-  console.log("token in binge slider", token);
-  const { data: categoryList, isLoading } = useQuery(
-    ["categories"],
-    () => fetchCategories(token!),
-    {
-      enabled: !!token,
+const BingeSlider = ({
+  token,
+  isLoading,
+}: {
+  token: string | null;
+  isLoading: boolean;
+}) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      if (token) {
+        try {
+          const fetchedCategories = await fetchCategories(token);
+          setCategories(fetchedCategories);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      }
+    };
+
+    if (token) {
+      getCategories();
     }
-  );
+  }, [token]);
+
+  if (isLoading || !token) {
+    return (
+      <Skeleton
+        sx={{ bgcolor: "grey.900" }}
+        variant="rectangular"
+        height={250}
+        width="100%"
+      />
+    );
+  }
 
   return (
     <Box sx={{ mt: "100px !important" }}>
-      {categoryList?.map((item: any, index: any) => (
+      {categories?.map((item: any, index: any) => (
         <Box key={item.category_id}>
           <SliderRowForGenre
             key={item.category_id}
@@ -64,7 +89,7 @@ const BingeSlider = ({ token }: { token: string }) => {
           mb: "160px",
           mx: "auto",
           "&:hover": {
-            background: "#FF4A50", // Set the background color to the same as the default state
+            background: "#FF4A50",
           },
         }}
         onClick={() => {

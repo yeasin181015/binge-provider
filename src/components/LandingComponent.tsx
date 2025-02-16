@@ -1,32 +1,34 @@
 import Banner from "./Banner";
-import { Box } from "@mui/material";
-import { useQuery } from "react-query";
 import BingeSlider from "./BingleSlider";
 import { fetchImages } from "../apis/fetchImages";
 import BingeDescription from "./BingeDescription";
 import React, { useEffect, useState } from "react";
 import { handleAnonLogin } from "../utils/handleAnnonLogin";
-import { GetCookiesValue } from "../utils/cookie";
-// import { apiSettings } from "../config/apiSettings";
-
-const fetchToken = async () => {
-  const token = await handleAnonLogin();
-  return token;
-};
 
 const LandingComponent = () => {
-  const { data: token, refetch: refetchToken } = useQuery(
-    ["token"],
-    fetchToken
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
+  const [imagesData, setImagesData] = useState<any>(null);
 
-  const { data: imagesData, isLoading } = useQuery(
-    ["images"],
-    () => fetchImages(token!),
-    {
-      enabled: !!token,
-    }
-  );
+  useEffect(() => {
+    const getTokenAndFetchImages = async () => {
+      try {
+        const fetchedToken = await handleAnonLogin();
+        setToken(fetchedToken);
+
+        const imagesResponse = await fetchImages(fetchedToken);
+        setImagesData(imagesResponse);
+      } catch (error) {
+        console.error("Error fetching token or images:", error);
+      } finally {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      }
+    };
+
+    getTokenAndFetchImages();
+  }, []);
 
   const bannerImages = {
     landscape: imagesData
@@ -49,7 +51,7 @@ const LandingComponent = () => {
         title={bingeDesc.title}
         description={bingeDesc.description}
       />
-      <BingeSlider token={token} />
+      <BingeSlider token={token} isLoading={isLoading} />
     </>
   );
 };
