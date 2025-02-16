@@ -14,9 +14,7 @@ interface SlickSliderProps {
   data: any[];
 }
 
-export default function SlickSlider({
-  data,
-}: SlickSliderProps) {
+export default function SlickSlider({ data }: SlickSliderProps) {
   const sliderRef = useRef<Slider>(null);
   const [mute, setVolumeStatus] = useState<boolean>(true);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -32,7 +30,7 @@ export default function SlickSlider({
           top: "50%",
           right: 0,
           transform: "translateY(-50%)",
-          zIndex: 10, 
+          zIndex: 10,
           display: "block !important",
           cursor: "pointer",
           position: "absolute",
@@ -47,12 +45,12 @@ export default function SlickSlider({
     const { className, style, onClick } = props;
     return (
       <Box
-        className={className} 
+        className={className}
         onClick={onClick}
         sx={{
           ...style,
           top: "50%",
-          left: 0, 
+          left: 0,
           transform: "translateY(-50%)",
           zIndex: 10,
           display: "block !important",
@@ -69,18 +67,12 @@ export default function SlickSlider({
     speed: 500,
     infinite: false,
     arrows: false,
-    slidesToShow: 3.5,
+    slidesToShow: 3,
     slidesToScroll: 1,
     beforeChange: (oldIndex, newIndex) => setActiveSlideIndex(newIndex),
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
     responsive: [
-      {
-        breakpoint: 1536,
-        settings: {
-          slidesToShow: 3.5,
-        },
-      },
       {
         breakpoint: 1300,
         settings: {
@@ -90,19 +82,19 @@ export default function SlickSlider({
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: 2.75,
+          slidesToShow: 2.5,
         },
       },
       {
         breakpoint: 1000,
         settings: {
-          slidesToShow: 2.5,
+          slidesToShow: 2,
         },
       },
       {
         breakpoint: 800,
         settings: {
-          slidesToShow: 1.75,
+          slidesToShow: 1.5,
         },
       },
       {
@@ -114,6 +106,26 @@ export default function SlickSlider({
     ],
   };
 
+  const ImageSlide = (item: any) => (
+    <Image
+      path={
+        item.image_landscape ||
+        item.image_portrait ||
+        item.image_square ||
+        item.thumb_path
+      }
+      sx={{
+        aspectRatio: "16/9",
+        width: "100%",
+        cursor: "pointer",
+        borderRadius: 2,
+      }}
+      onClick={() => {
+        window.location.assign("https://www.binge.buzz");
+      }}
+    />
+  );
+
   return (
     <Box sx={{ overflowX: "hidden", position: "relative" }}>
       {data.length > 0 && (
@@ -122,33 +134,22 @@ export default function SlickSlider({
           <Slider ref={sliderRef} {...settings}>
             {data.map((item, index) => {
               return (
-                <Box key={index} sx={{
-                    px: 2
-                }}>
+                <Box
+                  key={index}
+                  sx={{
+                    px: 1,
+                  }}
+                >
                   {index !== activeSlideIndex ? (
-                    <Image
-                      path={
-                        item.image_landscape ||
-                        item.image_portrait ||
-                        item.image_square ||
-                        item.thumb_path
-                      }
-                      sx={{
-                        aspectRatio: "16/9",
-                        width: "100%",
-                        cursor: "pointer",
-                        borderRadius: 2
-                      }}
-                      onClick={() => {
-                        window.location.assign("https://www.binge.buzz");
-                      }}
-                    />
-                  ) : (
+                    ImageSlide(item)
+                  ) : item.trailer_link ? (
                     <VideoJSPlayer
                       //@ts-ignore
                       _hlsStreamUrl={item.trailer_link}
                       isActive={index === activeSlideIndex}
                     />
+                  ) : (
+                    ImageSlide(item)
                   )}
                 </Box>
               );

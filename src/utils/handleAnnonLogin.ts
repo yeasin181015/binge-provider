@@ -1,10 +1,12 @@
 
 import { User, AuthError } from "firebase/auth";
 import { firebaseAnonymousSignIn } from "../config/firebaseConfig";
-import { SetCookiesValue } from "./cookie";
+import { GetCookiesValue, SetCookiesValue } from "./cookie";
 
 export const handleAnonLogin = async () => {
-  console.log("calling token api");
+  console.log("token in cookie", GetCookiesValue("annonJwtToken", false));
+  if (GetCookiesValue("annonJwtToken", false))
+    return GetCookiesValue("annonJwtToken", false);
   const timeoutPromise = new Promise((_, reject) =>
     setTimeout(() => reject("Timeout"), 5000)
   );
@@ -40,8 +42,8 @@ export const handleAnonLogin = async () => {
     const responseData = await response.json();
 
     if (responseData?.token) {
-      SetCookiesValue("jwtToken", responseData.token, 1, false);
-      sessionStorage.setItem("jwtToken", responseData.token);
+      SetCookiesValue("annonJwtToken", responseData.token, 1, false);
+      sessionStorage.setItem("annonJwtToken", responseData.token);
       return responseData.token;
     } else {
       return null;

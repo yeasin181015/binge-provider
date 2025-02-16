@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   Container,
@@ -6,24 +7,11 @@ import {
   useMediaQuery,
   Skeleton,
 } from "@mui/material";
-import WatchIcon from "../icons/WatchIcon";
-import { useEffect, useState } from "react";
-import { fetchImages } from "../apis/fetchImages";
-import { handleAnonLogin } from "../utils/handleAnnonLogin";
 import { useQuery } from "react-query";
-import BingeDescription from "./BingeDescription";
+import WatchIcon from "../icons/WatchIcon";
+import { handleAnonLogin } from "../utils/handleAnnonLogin";
 
 const BingeLogo = "https://pre.binge.buzz/assets/svg/binge-logo.svg";
-
-const fetchToken = async () => {
-  const token = await handleAnonLogin();
-  return token;
-};
-
-const useToken = () => {
-  const { data, error, isLoading } = useQuery("token", fetchToken);
-  return { token: data, error, isLoading };
-};
 
 interface Props {
   isLoading: boolean;
@@ -31,8 +19,6 @@ interface Props {
 }
 
 const Banner = ({ isLoading, bannerImages }: Props) => {
-  const { token } = useToken();
-
   const isXs = useMediaQuery("(max-width:600px)");
   const isLg = useMediaQuery("(min-width:1200px)");
   const is1400px = useMediaQuery("(min-width:1400px)");

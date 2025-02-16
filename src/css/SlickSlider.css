@@ -17,10 +17,10 @@ import slick-carousel/slick/slick-theme.css
   font-style: normal !important;
 }
   
-.slick-slide.slick-active {
+/* .slick-slide.slick-active {
   padding-left: 16px !important;
   padding-right: 16px !important;
-}
+} */
 
 .watchnow-text {
   font-family: "Manrope", sans-serif !important;

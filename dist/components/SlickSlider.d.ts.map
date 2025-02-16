@@ -1,1 +1,1 @@
-{"version":3,"file":"SlickSlider.d.ts","sourceRoot":"","sources":["../../src/components/SlickSlider.tsx"],"names":[],"mappings":"AAUA,eAAO,MAAM,cAAc,uCAAuC,CAAC;AAEnE,UAAU,gBAAgB;IACxB,IAAI,EAAE,GAAG,EAAE,CAAC;CACb;AAED,MAAM,CAAC,OAAO,UAAU,WAAW,CAAC,EAClC,IAAI,GACL,EAAE,gBAAgB,2CA+IlB"}
+{"version":3,"file":"SlickSlider.d.ts","sourceRoot":"","sources":["../../src/components/SlickSlider.tsx"],"names":[],"mappings":"AAUA,eAAO,MAAM,cAAc,uCAAuC,CAAC;AAEnE,UAAU,gBAAgB;IACxB,IAAI,EAAE,GAAG,EAAE,CAAC;CACb;AAED,MAAM,CAAC,OAAO,UAAU,WAAW,CAAC,EAAE,IAAI,EAAE,EAAE,gBAAgB,2CAkJ7D"}

@@ -86,7 +86,7 @@ const VideoJSPlayer = ({
     const [playbackRate, setPlaybackRate] = useState(1);
     const { options, onReady } = props;
 
-    const bingeToken = GetCookiesValue("jwtToken", false);
+    const bingeToken = GetCookiesValue("annonJwtToken", false);
 
     useEffect(() => {
       if (!playerRef.current) {

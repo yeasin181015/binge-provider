@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { fetchCategories } from "../apis/fetchCategories";
-import { handleAnonLogin } from "../utils/handleAnnonLogin";
+import React from "react";
 import { useQuery } from "react-query";
+import WatchIcon from "../icons/WatchIcon";
 import { Box, Button } from "@mui/material";
 import SliderRowForGenre from "./SliderRowForGenre";
-import WatchIcon from "../icons/WatchIcon";
+import { fetchCategories } from "../apis/fetchCategories";
+import { GetCookiesValue } from "../utils/cookie";
+// import { apiSettings } from "../config/apiSettings";
 
 export interface CategoryProps {
   id?: number;
@@ -22,32 +23,19 @@ export interface CategoryProps {
   target_user?: number;
 }
 
-const fetchToken = async () => {
-  const token = await handleAnonLogin();
-  return token;
-};
-
-const useToken = () => {
-  const { data, error, isLoading } = useQuery("token", fetchToken);
-  return { token: data, error, isLoading };
-};
-
-const BingeSlider = () => {
-  const { token } = useToken();
-
-  const [categoryList, setCategoryList] = useState<CategoryProps[]>([]);
-
-  useEffect(() => {
-    if (token) {
-      fetchCategories(token).then((category) => {
-        setCategoryList(category);
-      });
+const BingeSlider = ({ token }: { token: string }) => {
+  console.log("token in binge slider", token);
+  const { data: categoryList, isLoading } = useQuery(
+    ["categories"],
+    () => fetchCategories(token!),
+    {
+      enabled: !!token,
     }
-  }, [token]);
+  );
 
   return (
     <Box sx={{ mt: "100px !important" }}>
-      {categoryList?.map((item, index) => (
+      {categoryList?.map((item: any, index: any) => (
         <Box key={item.category_id}>
           <SliderRowForGenre
             key={item.category_id}

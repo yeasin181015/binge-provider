@@ -13,6 +13,8 @@ export interface CategoryProps {
     ad_type?: number;
     target_user?: number;
 }
-declare const BingeSlider: () => import("react/jsx-runtime").JSX.Element;
+declare const BingeSlider: ({ token }: {
+    token: string;
+}) => import("react/jsx-runtime").JSX.Element;
 export default BingeSlider;
 //# sourceMappingURL=BingleSlider.d.ts.map
