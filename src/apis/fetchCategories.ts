@@ -12,13 +12,13 @@ export const fetchCategories = async (token: string) => {
     // );
 
     const responseAllCategories = await fetch(
-      "https://web-api.binge.buzz/api/v3/page/allCategories",
+      "https://web-api-staging.binge.buzz/api/v3/page/allCategories",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
-          "Device-Type": "web",
+          "Device-Type": "websdk",
         },
         body: JSON.stringify({
           page: "web-home-vod",

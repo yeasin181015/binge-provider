@@ -1,1 +1,2 @@
-export { default as BingeLandingPage } from './components/BingeLandingPage';
+import "./css/SlickSlider.css";
+export { default as BingeLandingPage } from "./components/BingeLandingPage";

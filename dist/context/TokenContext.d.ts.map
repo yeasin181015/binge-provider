@@ -1,0 +1,1 @@
+{"version":3,"file":"TokenContext.d.ts","sourceRoot":"","sources":["../../src/context/TokenContext.tsx"],"names":[],"mappings":"AAGA,QAAA,MAAM,YAAY,wCAAqC,CAAC;AAExD,QAAA,MAAM,aAAa,iBAAwB;IAAE,QAAQ,EAAE,KAAK,CAAC,SAAS,CAAA;CAAE,qDAUvE,CAAC;AAEF,OAAO,EAAE,YAAY,EAAE,aAAa,EAAE,CAAC;AACvC,eAAe,aAAa,CAAC"}

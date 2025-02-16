@@ -1,18 +1,18 @@
 import React from "react";
-import BingeSlider from "./BingleSlider";
-import { Box } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import palette from "../theme/palette";
-import Banner from "./Banner";
+import LandingComponent from "./LandingComponent";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const queryClient = new QueryClient();
 
 const BingeLandingPage = () => {
   return (
-    <ThemeProvider theme={createTheme({ palette })}>
-      <Box>
-        <Banner />
-        {/* <BingeSlider /> */}
-      </Box>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={createTheme({ palette })}>
+        <LandingComponent />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 };
 

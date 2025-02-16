@@ -4,6 +4,7 @@ import { firebaseAnonymousSignIn } from "../config/firebaseConfig";
 import { SetCookiesValue } from "./cookie";
 
 export const handleAnonLogin = async () => {
+  console.log("calling token api");
   const timeoutPromise = new Promise((_, reject) =>
     setTimeout(() => reject("Timeout"), 5000)
   );
@@ -22,12 +23,12 @@ export const handleAnonLogin = async () => {
     }
 
     const response = await fetch(
-      "https://web-api.binge.buzz/api/v3/oauth/verify/login/anon",
+      "https://web-api-staging.binge.buzz/api/v3/oauth/verify/login/anon",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Device-Type": "web",
+          "Device-Type": "websdk",
         },
         body: JSON.stringify({
           access_token: res.accessToken,

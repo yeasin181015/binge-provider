@@ -1,0 +1,1 @@
+{"version":3,"file":"VideoJSPlayer.d.ts","sourceRoot":"","sources":["../../src/components/VideoJSPlayer.tsx"],"names":[],"mappings":"AAGA,OAAO,4BAA4B,CAAC;AAgDpC,QAAA,MAAM,aAAa,iCAGhB;IACD,aAAa,EAAE,MAAM,CAAC;IACtB,QAAQ,EAAE,OAAO,CAAC;CACnB,4CAqHA,CAAC;AAEF,eAAe,aAAa,CAAC"}
