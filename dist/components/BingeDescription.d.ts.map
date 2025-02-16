@@ -1,1 +1,1 @@
-{"version":3,"file":"BingeDescription.d.ts","sourceRoot":"","sources":["../../src/components/BingeDescription.tsx"],"names":[],"mappings":"AAGA,QAAA,MAAM,gBAAgB,2BAA4B;IAAC,KAAK,EAAE,MAAM,CAAC;IAAC,WAAW,EAAE,MAAM,CAAA;CAAC,4CA+CrF,CAAC;AAEF,eAAe,gBAAgB,CAAC"}
+{"version":3,"file":"BingeDescription.d.ts","sourceRoot":"","sources":["../../src/components/BingeDescription.tsx"],"names":[],"mappings":"AAIA,QAAA,MAAM,gBAAgB,4BAGnB;IACD,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,EAAE,MAAM,CAAC;CACrB,4CAgEA,CAAC;AAEF,eAAe,gBAAgB,CAAC"}

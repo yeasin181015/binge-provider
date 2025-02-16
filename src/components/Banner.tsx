@@ -7,7 +7,6 @@ import {
   useMediaQuery,
   Skeleton,
 } from "@mui/material";
-import { useQuery } from "react-query";
 import WatchIcon from "../icons/WatchIcon";
 import { handleAnonLogin } from "../utils/handleAnnonLogin";
 
@@ -32,7 +31,17 @@ const Banner = ({ isLoading, bannerImages }: Props) => {
         width="100%"
         animation="wave"
         height={300}
-        sx={{ bgcolor: "grey.900" }}
+        sx={{
+          bgcolor: "#f2eeeb",
+          background:
+            "linear-gradient(90deg, #f2eeeb 25%, #f2e8f2 50%, #f2eeeb 75%)",
+          backgroundSize: "300% 100%",
+          animation: "waveAnimation 1.6s ease-in-out infinite",
+          "@keyframes waveAnimation": {
+            "0%": { backgroundPosition: "100% 0" },
+            "100%": { backgroundPosition: "-100% 0" },
+          },
+        }}
       />
     );
   }

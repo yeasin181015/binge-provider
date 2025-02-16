@@ -7,7 +7,7 @@ export default function withPagination(
   props: RowProps
 ) {
   return function WithPagination() {
-    const { category, type, token, tile } = props;
+    const { category, type, token, tile, isLoading } = props;
     const [productList, setProductList] = useState<any[]>([]);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function withPagination(
     }, [category, token]);
 
     if (productList && productList.length > 0) {
-      return <Component data={productList} />;
+      return <Component data={productList} isLoading={isLoading} />;
     }
     // else {
     //   return <RowSkeleton />;

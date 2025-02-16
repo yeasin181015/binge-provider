@@ -52,6 +52,7 @@
     "rollup-plugin-env": "^0.21.4",
     "slick-carousel": "^1.8.1",
     "tslib": "^2.8.1",
+    "typewriter-effect": "^2.21.0",
     "video.js": "^8.21.0",
     "videojs": "^1.0.0",
     "videojs-chromecast": "^2.0.8",

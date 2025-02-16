@@ -50,9 +50,11 @@ function drmCall(bingeToken: string) {
 }
 
 const VideoJSPlayer = ({
+  videoId,
   _hlsStreamUrl,
   isActive,
 }: {
+  videoId: number;
   _hlsStreamUrl: string;
   isActive: boolean;
 }) => {
@@ -93,7 +95,6 @@ const VideoJSPlayer = ({
         const videoElement = document.createElement("video-js");
         videoElement.setAttribute("crossorigin", "anonymous");
 
-
         videoElement.classList.add("vjs-big-play-centered");
         videoRef.current!.appendChild(videoElement);
 
@@ -112,7 +113,6 @@ const VideoJSPlayer = ({
           console.warn("Video.js encountered an error but will retry.");
           setTimeout(() => player.src(options.sources), 3000); // Retry after 3s
         });
-        
       } else {
         const player = playerRef.current;
 
@@ -142,9 +142,9 @@ const VideoJSPlayer = ({
       <>
         <div
           data-vjs-player
-          style={{ width: "100%", height: "100%",  cursor: "pointer" }}
+          style={{ width: "100%", height: "100%", cursor: "pointer" }}
           onClick={() => {
-            window.location.assign("https://www.binge.buzz");
+            window.location.assign(`https://binge.buzz/playing-vod/${videoId}`);
           }}
         >
           <div

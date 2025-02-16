@@ -47,23 +47,13 @@ const BingeSlider = ({
     }
   }, [token]);
 
-  if (isLoading || !token) {
-    return (
-      <Skeleton
-        sx={{ bgcolor: "grey.900" }}
-        variant="rectangular"
-        height={250}
-        width="100%"
-      />
-    );
-  }
-
   return (
     <Box sx={{ mt: "100px !important" }}>
       {categories?.map((item: any, index: any) => (
         <Box key={item.category_id}>
           <SliderRowForGenre
             key={item.category_id}
+            isLoading={isLoading}
             category={item}
             type="cardWithHover"
             visibleOverflow={true}

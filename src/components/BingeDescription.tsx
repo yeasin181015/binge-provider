@@ -1,7 +1,23 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import Typewriter from "typewriter-effect";
 
-const BingeDescription = ({ title, description }: {title: string, description: string}) => {
+const BingeDescription = ({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) => {
+  const typewriterRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (typewriterRef.current) {
+      typewriterRef.current.stop();
+      typewriterRef.current.deleteAll();
+      typewriterRef.current.typeString(description || "").start();
+    }
+  }, [description]);
   return (
     <Box
       sx={{
@@ -32,7 +48,7 @@ const BingeDescription = ({ title, description }: {title: string, description: s
       >
         {title}
       </Typography>
-      <Typography
+      <Box
         className="binge-text"
         sx={{
           color: "#697586",
@@ -44,8 +60,16 @@ const BingeDescription = ({ title, description }: {title: string, description: s
           textAlign: "center",
         }}
       >
-        {description}
-      </Typography>
+        <Typewriter
+          onInit={(typewriter) => {
+            typewriterRef.current = typewriter;
+            typewriter.typeString(description || "").start();
+          }}
+          options={{
+            delay: 40,
+          }}
+        />
+      </Box>
     </Box>
   );
 };

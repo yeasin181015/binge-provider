@@ -1,4 +1,4 @@
-declare const BingeDescription: ({ title, description }: {
+declare const BingeDescription: ({ title, description, }: {
     title: string;
     description: string;
 }) => import("react/jsx-runtime").JSX.Element;

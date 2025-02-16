@@ -32,6 +32,7 @@ export interface RowProps {
   data?: DataProps;
   visibleOverflow?: boolean;
   tile?: number;
+  isLoading: boolean;
 }
 
 export type Genre = {
