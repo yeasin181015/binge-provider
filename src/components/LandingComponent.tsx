@@ -21,9 +21,7 @@ const LandingComponent = () => {
       } catch (error) {
         console.error("Error fetching token or images:", error);
       } finally {
-        setTimeout(() => {
           setIsLoading(false);
-        }, 1000);
       }
     };
 

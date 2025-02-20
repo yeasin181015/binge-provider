@@ -3,12 +3,14 @@ import { LOCAL_BASE_URL } from "./SlickSlider";
 
 function Image({
   path,
+  // pathRedirect,
   sx,
-  onClick,
+  // onClick,
 }: {
+  // pathRedirect: string;
   path: string;
   sx?: any;
-  onClick: () => void;
+  // onClick: () => void;
 }) {
   const onMediaFallback = (event: { target: any }) => {
     const { target } = event;
@@ -16,10 +18,11 @@ function Image({
   };
 
   return (
-    <Box
+  //  <a href={pathRedirect}>
+     <Box
       sx={{ ...sx }}
       component="img"
-      onClick={onClick}
+      // onClick={onClick}
       src={
         path
           ? `${LOCAL_BASE_URL}/${path}`
@@ -27,7 +30,9 @@ function Image({
       }
       onError={onMediaFallback}
     />
+  //  </a>
   );
 }
 
 export default Image;
+// 

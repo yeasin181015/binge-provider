@@ -60,7 +60,7 @@ const BingeDescription = ({
           textAlign: "center",
         }}
       >
-        <Typewriter
+        {/* <Typewriter
           onInit={(typewriter) => {
             typewriterRef.current = typewriter;
             typewriter.typeString(description || "").start();
@@ -68,7 +68,8 @@ const BingeDescription = ({
           options={{
             delay: 40,
           }}
-        />
+        /> */}
+        <Typography>{description || ""}</Typography>
       </Box>
     </Box>
   );

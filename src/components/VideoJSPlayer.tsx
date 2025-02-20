@@ -4,14 +4,17 @@ import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import Player from "video.js/dist/types/player";
 import { GetCookiesValue } from "../utils/cookie";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 
 function checkLiveOrStage() {
-  const env =
-    window.location.hostname === "pre.binge.buzz" ||
-    window.location.hostname.includes("localhost")
-      ? "staging"
-      : "production";
-  return env;
+  // const env =
+  //   window.location.hostname === "pre.binge.buzz" ||
+  //   window.location.hostname.includes("localhost")
+  //     ? "staging"
+  //     : "production";
+  // return env;
+  return "staging";
 }
 
 function drmCall(bingeToken: string) {
@@ -53,25 +56,51 @@ const VideoJSPlayer = ({
   videoId,
   _hlsStreamUrl,
   isActive,
+  redirectPath,
 }: {
   videoId: number;
   _hlsStreamUrl: string;
   isActive: boolean;
+  redirectPath: string;
 }) => {
+  const playerRef = useRef<Player | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const handlePlayerReady = (player: Player | null) => {
+    playerRef.current = player;
+
+    // You can handle player events here, for example:
+    player?.on("waiting", () => {
+      videojs.log("player is waiting");
+    });
+
+    player?.on("dispose", () => {
+      videojs.log("player will dispose");
+    });
+  };
+
+  const toggleMute = () => {
+    if (playerRef.current) {
+      const newMuteState = !playerRef.current.muted();
+      playerRef.current.muted(newMuteState);
+      setIsMuted(newMuteState);
+    }
+  };
+
   const videoJsOptions = {
     autoplay: isActive,
-    muted: isActive,
-    controls: true,
+    // muted: isActive,
+    controls: false,
     responsive: true,
     fluid: true,
     experimentalSvgIcons: true,
-    playbackRates: [0.5, 1, 1.5, 2],
-    controlBar: {
-      skipButtons: {
-        forward: 10,
-        backward: 10,
-      },
-    },
+    // playbackRates: [0.5, 1, 1.5, 2],
+    // controlBar: {
+    //   skipButtons: {
+    //     forward: 10,
+    //     backward: 10,
+    //   },
+    // },
     sources: [
       {
         src: _hlsStreamUrl,
@@ -104,12 +133,21 @@ const VideoJSPlayer = ({
           () => {
             videojs.log("player is ready");
             onReady && onReady(player);
+            player.muted(true);
           }
         ));
+
+        player.on("loadeddata", () => {
+          console.log("Video.js has successfully loaded the video.");
+        });
+
         player.on("loadstart", function (_e: any) {
+          console.log("Video.js has started loading.");
           drmCall(bingeToken);
         });
-        player.on("error", function () {
+
+        player.on("error", function (error: any) {
+          console.error("Video js error", error);
           console.warn("Video.js encountered an error but will retry.");
           setTimeout(() => player.src(options.sources), 3000); // Retry after 3s
         });
@@ -139,37 +177,36 @@ const VideoJSPlayer = ({
     }, [playerRef]);
 
     return (
-      <>
-        <div
-          data-vjs-player
-          style={{ width: "100%", height: "100%", cursor: "pointer" }}
-          onClick={() => {
-            window.location.assign(`https://binge.buzz/playing-vod/${videoId}`);
-          }}
-        >
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
+        <div data-vjs-player style={{ width: "100%", height: "100%" }}>
           <div
             style={{ borderRadius: "16px" }}
             ref={videoRef as LegacyRef<HTMLDivElement> | undefined}
           />
         </div>
-        <style>
-          {`
-          .vjs-loading-spinner {
-            margin-top: 0 !important;
-            margin-left: 0 !important;
-            border-radius: "16px"
-          }
-        `}
-        </style>
-      </>
+
+        {/* Custom Mute Button */}
+        <button
+          onClick={toggleMute}
+          style={{
+            position: "absolute",
+            bottom: "10px",
+            right: "10px",
+            background: "rgba(0, 0, 0, 0.6)",
+            border: "none",
+            borderRadius: "50%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+        </button>
+      </div>
     );
   };
   return (
     <div>
-      <VideoPlayer
-        options={videoJsOptions}
-        onReady={() => console.log("The video is ready to play")}
-      />
+      <VideoPlayer options={videoJsOptions} onReady={handlePlayerReady} />
     </div>
   );
 };

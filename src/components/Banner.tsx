@@ -159,9 +159,9 @@ const Banner = ({ isLoading, bannerImages }: Props) => {
               fontWeight: { xs: "400", lg: "600" },
               marginTop: { xs: "15px", md: "30px" },
             }}
-            onClick={() => {
-              window.location.assign("https://www.binge.buzz");
-            }}
+            // onClick={() => {
+            //   window.location.assign("https://www.binge.buzz");
+            // }}
             className="watchnow-text"
           >
             Watch Now

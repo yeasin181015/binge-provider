@@ -9,11 +9,11 @@ export const fetchCategories = async (token: string) => {
         "Device-Type": "websdk",
       },
       body: JSON.stringify({
-        page: "web-home-vod",
+        page: "corporate-sdk-home",
       }),
     }
   );
 
   const resAllCatData = await responseAllCategories.json();
-  return resAllCatData.categories.slice(1, 2);
+  return resAllCatData.categories;
 };

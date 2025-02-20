@@ -50,7 +50,7 @@ const BingeSlider = ({
   return (
     <Box sx={{ mt: "100px !important" }}>
       {categories?.map((item: any, index: any) => (
-        <Box key={item.category_id}>
+        <Box key={item.category_id} sx={{ mb: "50px" }}>
           <SliderRowForGenre
             key={item.category_id}
             isLoading={isLoading}
@@ -82,9 +82,9 @@ const BingeSlider = ({
             background: "#FF4A50",
           },
         }}
-        onClick={() => {
-          window.location.assign("https://www.binge.buzz");
-        }}
+        // onClick={() => {
+        //   window.location.assign("https://www.binge.buzz");
+        // }}
       >
         Watch Now
         <WatchIcon />
