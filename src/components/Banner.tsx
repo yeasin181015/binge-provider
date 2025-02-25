@@ -1,4 +1,5 @@
 "use client";
+
 import React from "react";
 import {
   Box,
@@ -9,13 +10,12 @@ import {
   Skeleton,
 } from "@mui/material";
 import WatchIcon from "../icons/WatchIcon";
-import { handleAnonLogin } from "../utils/handleAnnonLogin";
 
 const BingeLogo = "https://pre.binge.buzz/assets/svg/binge-logo.svg";
 
 interface Props {
   isLoading: boolean;
-  bannerImages: { landscape: string; portrait: string };
+  bannerImages: { landscape: string; portrait: string; actionLink: string };
 }
 
 const Banner = ({ isLoading, bannerImages }: Props) => {
@@ -160,9 +160,11 @@ const Banner = ({ isLoading, bannerImages }: Props) => {
               fontWeight: { xs: "400", lg: "600" },
               marginTop: { xs: "15px", md: "30px" },
             }}
-            // onClick={() => {
-            //   window.location.assign("https://www.binge.buzz");
-            // }}
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                window.location.assign(bannerImages.actionLink);
+              }
+            }}
             className="watchnow-text"
           >
             Watch Now

@@ -3,6 +3,7 @@ interface Props {
     bannerImages: {
         landscape: string;
         portrait: string;
+        actionLink: string;
     };
 }
 declare const Banner: ({ isLoading, bannerImages }: Props) => import("react/jsx-runtime").JSX.Element;

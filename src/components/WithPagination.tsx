@@ -1,7 +1,7 @@
 "use client";
-import { ElementType, useEffect, useState } from "react";
+
+import React, { ElementType, useEffect, useState } from "react";
 import { RowProps } from "./SliderRowForGenre";
-import RowSkeleton from "./RowSkeleton";
 
 export default function withPagination(
   Component: ElementType,
@@ -44,15 +44,14 @@ export default function withPagination(
             ProductRes.data.products.length
           ) {
             setProductList(ProductRes.data.products);
-            // setTotalProduct(ProductRes.data.total);
           }
         }
       };
       fetchProducts();
     }, [category, token]);
 
-    if (productList && productList.length > 0) {
-      return <Component data={productList} isLoading={isLoading} />;
-    }
+    // if (productList && productList.length > 0) {
+    return <Component data={productList} isLoading={isLoading} />;
+    // }
   };
 }

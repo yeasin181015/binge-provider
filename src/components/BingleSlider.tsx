@@ -1,11 +1,10 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import WatchIcon from "../icons/WatchIcon";
-import { Box, Button, Typography } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
 import SliderRowForGenre from "./SliderRowForGenre";
+import { Box, Button, Typography } from "@mui/material";
 import { fetchCategories } from "../apis/fetchCategories";
-import VideoPlayer from "./VideoPlayerComponents/VideoPlayer";
 
 export interface CategoryProps {
   id?: number;
@@ -26,9 +25,11 @@ export interface CategoryProps {
 const BingeSlider = ({
   token,
   isLoading,
+  link,
 }: {
   token: string | null;
   isLoading: boolean;
+  link: string;
 }) => {
   const [categories, setCategories] = useState([]);
 
@@ -52,7 +53,6 @@ const BingeSlider = ({
   return (
     <Box sx={{ mt: "100px !important" }}>
       {categories?.map((item: any, index: any) => {
-        console.log("item", item);
         return (
           <Box
             key={item.category_id}
@@ -77,7 +77,6 @@ const BingeSlider = ({
           </Box>
         );
       })}
-      {/* <VideoPlayer /> */}
       <Button
         className="watchnow-text"
         sx={{
@@ -100,7 +99,9 @@ const BingeSlider = ({
           },
         }}
         onClick={() => {
-          window.location.assign("https://www.binge.buzz");
+          if (typeof window !== "undefined") {
+            window.location.assign(link);
+          }
         }}
       >
         Watch Now

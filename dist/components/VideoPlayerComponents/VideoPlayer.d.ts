@@ -1,4 +1,3 @@
-import "video.js/dist/video-js.css";
 import "plyr/dist/plyr.css";
 interface VideoPlayerProps {
     videoId: number;

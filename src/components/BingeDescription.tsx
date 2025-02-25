@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+
+import React from "react";
 import { Box, Typography } from "@mui/material";
-import Typewriter from "typewriter-effect";
 
 const BingeDescription = ({
   title,
@@ -10,15 +10,6 @@ const BingeDescription = ({
   title: string;
   description: string;
 }) => {
-  const typewriterRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (typewriterRef.current) {
-      typewriterRef.current.stop();
-      typewriterRef.current.deleteAll();
-      typewriterRef.current.typeString(description || "").start();
-    }
-  }, [description]);
   return (
     <Box
       sx={{
@@ -61,16 +52,7 @@ const BingeDescription = ({
           textAlign: "center",
         }}
       >
-        {/* <Typewriter
-          onInit={(typewriter) => {
-            typewriterRef.current = typewriter;
-            typewriter.typeString(description || "").start();
-          }}
-          options={{
-            delay: 40,
-          }}
-        /> */}
-        <Typography>{description || ""}</Typography>
+        <Typography>{description}</Typography>
       </Box>
     </Box>
   );

@@ -1,10 +1,11 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Banner from "./Banner";
 import BingeSlider from "./BingleSlider";
 import { fetchImages } from "../apis/fetchImages";
 import BingeDescription from "./BingeDescription";
-import React, { useEffect, useState } from "react";
+import { defaultValues } from "../config/default";
 import { handleAnonLogin } from "../utils/handleAnnonLogin";
 
 const LandingComponent = () => {
@@ -37,11 +38,14 @@ const LandingComponent = () => {
     portrait: imagesData
       ? `https://web-api-staging.binge.buzz/${imagesData.banners[0].banner_portrait_image_path}`
       : "",
+    actionLink: imagesData?.banners[0]["action-link"] || defaultValues.link,
   };
 
   const bingeDesc = {
-    title: imagesData?.banners[0]["section-title"] || "",
-    description: imagesData?.banners[0]["section-description"] || "",
+    title: imagesData?.banners[0]["section-title"] || defaultValues.bingeTitle,
+    description:
+      imagesData?.banners[0]["section-description"] ||
+      defaultValues.bingeDescription,
   };
 
   return (
@@ -51,7 +55,11 @@ const LandingComponent = () => {
         title={bingeDesc.title}
         description={bingeDesc.description}
       />
-      <BingeSlider token={token} isLoading={isLoading} />
+      <BingeSlider
+        token={token}
+        isLoading={isLoading}
+        link={imagesData?.banners[0]["action-link"] || defaultValues.link}
+      />
     </>
   );
 };

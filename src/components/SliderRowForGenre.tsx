@@ -1,4 +1,5 @@
 "use client";
+
 import SlickSlider from "./SlickSlider";
 import withPagination from "./WithPagination";
 
@@ -46,10 +47,6 @@ export type CustomGenre = {
   apiString: string;
 };
 
-interface SliderRowForGenreProps {
-  genre: Genre | CustomGenre;
-  mediaType: MEDIA_TYPE;
-}
 
 export default function SliderRowForGenre(props: RowProps) {
   const Component = withPagination(SlickSlider, props);

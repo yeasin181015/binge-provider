@@ -1,15 +1,13 @@
 "use client";
+
+import React, { useState, useRef } from "react";
 import Image from "./Image";
 import styled from "styled-components";
-import VideoJSPlayer from "./VideoJSPlayer";
 import { Box, Skeleton } from "@mui/material";
 import Slider, { Settings } from "react-slick";
-import React, { useState, useRef } from "react";
+import VideoPlayer from "./VideoPlayerComponents/VideoPlayer";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import VideoPlayer from "./VideoPlayerComponents/VideoPlayer";
-
-// const VideoJsPlayerComponent = lazy(() => import("./VideoJSPlayer"));
 
 export const LOCAL_BASE_URL = "https://web-api-staging.binge.buzz";
 
@@ -196,9 +194,9 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
   };
 
   const handleVideoClick = (item: any) => {
-    // if (typeof window !== "undefined") {
-    //   window.location.assign(`https://binge.buzz/playing-vod/${item.id}`);
-    // }
+    if (typeof window !== "undefined") {
+      window.location.assign(`https://binge.buzz/playing-vod/${item.id}`);
+    }
   };
 
   return (
@@ -209,7 +207,7 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
             <SamplePrevArrow onClick={() => sliderRef?.current?.slickPrev()} />
           )}
           <Slider ref={sliderRef} {...settings}>
-            {data.map((item, index) => {
+            {data?.map((item, index) => {
               return (
                 <Houdini key={index}>
                   <InnerContainer
@@ -223,141 +221,93 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
                       }
                     }}
                   >
-                    {
-                      isLoading ? (
-                        <Skeleton
-                          variant="rectangular"
-                          width="100%"
-                          height={250}
-                          sx={{
-                            bgcolor: "#F9F9FB",
-                            background:
-                              "linear-gradient(90deg, #F9F9FB 25%, #f2e8f2 50%, #F9F9FB 75%)",
-                            backgroundSize: "300% 100%",
-                            animation:
-                              "waveAnimation 2.8s ease-in-out infinite",
-                            "@keyframes waveAnimation": {
-                              "0%": { backgroundPosition: "100% 0" },
-                              "100%": { backgroundPosition: "-100% 0" },
-                            },
-                            borderRadius: 2,
-                          }}
-                        />
-                      ) : (
+                    {isLoading ? (
+                      <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={250}
+                        sx={{
+                          bgcolor: "#F9F9FB",
+                          background:
+                            "linear-gradient(90deg, #F9F9FB 25%, #f2e8f2 50%, #F9F9FB 75%)",
+                          backgroundSize: "300% 100%",
+                          animation: "waveAnimation 2.8s ease-in-out infinite",
+                          "@keyframes waveAnimation": {
+                            "0%": { backgroundPosition: "100% 0" },
+                            "100%": { backgroundPosition: "-100% 0" },
+                          },
+                          borderRadius: 2,
+                        }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          position: "relative",
+                          width: "100%",
+                          aspectRatio: "16/9",
+                        }}
+                      >
+                        {/* Image Component */}
                         <Box
                           sx={{
-                            position: "relative",
+                            position: "absolute",
                             width: "100%",
-                            aspectRatio: "16/9",
+                            height: "100%",
+                            transition: "opacity 0.8s ease-in-out",
+                            opacity: index === activeSlideIndex ? 0 : 1,
+                            zIndex: index === activeSlideIndex ? 0 : 1,
                           }}
-                          onClick={() => handleVideoClick(item)}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {/* Image Component */}
-                          <Box
+                          <Image
+                            path={
+                              item.image_landscape ||
+                              item.image_portrait ||
+                              item.image_square ||
+                              item.thumb_path
+                            }
                             sx={{
-                              position: "absolute",
+                              borderRadius: "16px",
                               width: "100%",
-                              height: "100%",
-                              transition: "opacity 0.8s ease-in-out",
-                              opacity: index === activeSlideIndex ? 0 : 1,
-                              zIndex: index === activeSlideIndex ? 0 : 1,
+                              aspectRatio: "16/9",
+                              objectFit: "contain",
+                              cursor: "pointer",
                             }}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Image
-                              path={
-                                item.image_landscape ||
-                                item.image_portrait ||
-                                item.image_square ||
-                                item.thumb_path
-                              }
-                              sx={{
-                                borderRadius: "16px",
-                                width: "100%",
-                                aspectRatio: "16/9",
-                                objectFit: "contain",
-                                cursor: "pointer",
-                              }}
-                              onClick={() => {
-                                //   if (typeof window !== "undefined") {
-                                //     window.location.assign(
-                                //       `https://binge.buzz/playing-vod/${item.id}`
-                                //     );
-                                //   }
-                              }}
-                            />
-                          </Box>
-
-                          {/* VideoJSPlayer Component */}
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              width: "100%",
-                              height: "100%",
-                              transition: "opacity 0.8s ease-in-out",
-                              opacity: index === activeSlideIndex ? 1 : 0,
-                              zIndex: index === activeSlideIndex ? 1 : 0,
-                            }}
-                          >
-                            {/* <Suspense fallback={<div>Loading...</div>}> */}
-                            {/* <VideoJSPlayer
-                              videoId={item.id}
-                              //@ts-ignore
-                              _hlsStreamUrl={item.trailer_link}
-                              isActive={index === activeSlideIndex}
-                              path={
-                                item.image_landscape ||
-                                item.image_portrait ||
-                                item.image_square ||
-                                item.thumb_path
-                              }
-                              redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
-                              initialTime={videoProgress[item.id] || 0}
-                              onTimeUpdate={(time: any) =>
-                                handleTimeUpdate(item.id, time)
-                              }
-                            /> */}
-                            <VideoPlayer
-                              videoId={item.id}
-                              //@ts-ignore
-                              _hlsStreamUrl={item.trailer_link}
-                              isActive={index === activeSlideIndex}
-                              path={
-                                item.image_landscape ||
-                                item.image_portrait ||
-                                item.image_square ||
-                                item.thumb_path
-                              }
-                              redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
-                              initialTime={videoProgress[item.id] || 0}
-                              onTimeUpdate={(time: any) =>
-                                handleTimeUpdate(item.id, time)
-                              }
-                            />
-                            {/* </Suspense> */}
-                          </Box>
+                            onClick={() => handleVideoClick(item)}
+                          />
                         </Box>
-                      )
 
-                      //   : index !== activeSlideIndex ? (
-                      //     ImageSlide(item, index)
-                      //   ) : (
-                      //     <VideoJSPlayer
-                      //       videoId={item.id}
-                      //       //@ts-ignore
-                      //       _hlsStreamUrl={item.trailer_link}
-                      //       isActive={index === activeSlideIndex}
-                      //       redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
-                      //       style={{
-                      //         display: index === activeSlideIndex ? "block" : "none",
-                      //       }}
-                      //       initialTime={videoProgress[item.id] || 0}
-                      //       onTimeUpdate={(time: any) =>
-                      //         handleTimeUpdate(item.id, time)
-                      //       }
-                      //     />
-                      //   )
-                    }
+                        {/* VideoJSPlayer Component */}
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                            transition: "opacity 0.8s ease-in-out",
+                            opacity: index === activeSlideIndex ? 1 : 0,
+                            zIndex: index === activeSlideIndex ? 1 : 0,
+                          }}
+                        >
+                          <VideoPlayer
+                            videoId={item.id}
+                            //@ts-ignore
+                            _hlsStreamUrl={item.trailer_link}
+                            isActive={index === activeSlideIndex}
+                            path={
+                              item.image_landscape ||
+                              item.image_portrait ||
+                              item.image_square ||
+                              item.thumb_path
+                            }
+                            redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
+                            initialTime={videoProgress[item.id] || 0}
+                            onTimeUpdate={(time: any) =>
+                              handleTimeUpdate(item.id, time)
+                            }
+                          />
+                        </Box>
+                      </Box>
+                    )}
                   </InnerContainer>
                 </Houdini>
               );
