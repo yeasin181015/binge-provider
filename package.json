@@ -5,6 +5,9 @@
   "style": "dist/css/SlickSlider.css",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "browser": {
+    "crypto": false
+  },
   "scripts": {
     "build": "rollup -c",
     "prepare": "npm run build"
@@ -23,13 +26,14 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-slick": "^0.23.10",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
     "rollup": "^3.0.0",
     "rollup-plugin-image": "^1.0.2",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vite-plugin-static-copy": "^2.2.0"
   },
   "dependencies": {
     "@babel/preset-react": "^7.26.3",
@@ -39,13 +43,18 @@
     "@mui/material": "^5.10.0",
     "@mui/styles": "^5.14.11",
     "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-dynamic-import-vars": "^2.1.5",
     "@silvermine/videojs-chromecast": "^1.5.0",
     "@types/crypto-js": "^4.2.2",
     "@videojs/http-streaming": "^3.17.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
     "firebase": "^11.2.0",
+    "hls.js": "^1.5.20",
     "js-cookie": "^3.0.5",
+    "path": "^0.12.7",
+    "plyr": "^3.7.8",
     "react-router-dom": "^6.9.0",
     "react-slick": "^0.29.0",
     "rollup-plugin-copy": "^3.5.0",
@@ -54,6 +63,7 @@
     "styled-components": "^6.1.15",
     "tslib": "^2.8.1",
     "typewriter-effect": "^2.21.0",
+    "video.js": "^8.21.0",
     "videojs": "^1.0.0",
     "videojs-chromecast": "^2.0.8",
     "videojs-contrib-ads": "^7.5.2",
@@ -64,6 +74,8 @@
     "videojs-ima": "^2.3.0",
     "videojs-overlay": "^4.0.0",
     "videojs-youtube": "^3.0.1",
+    "vite": "^6.1.1",
+    "vite-plugin-dts": "^4.5.0",
     "youbora-adapter-videojs": "^6.8.21"
   }
 }

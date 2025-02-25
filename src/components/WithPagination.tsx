@@ -1,3 +1,4 @@
+"use client";
 import { ElementType, useEffect, useState } from "react";
 import { RowProps } from "./SliderRowForGenre";
 import RowSkeleton from "./RowSkeleton";
@@ -9,6 +10,7 @@ export default function withPagination(
   return function WithPagination() {
     const { category, type, token, tile, isLoading } = props;
     const [productList, setProductList] = useState<any[]>([]);
+    console.log(category, "catttt");
 
     useEffect(() => {
       const fetchProducts = async () => {
@@ -52,8 +54,5 @@ export default function withPagination(
     if (productList && productList.length > 0) {
       return <Component data={productList} isLoading={isLoading} />;
     }
-    // else {
-    //   return <RowSkeleton />;
-    // }
   };
 }

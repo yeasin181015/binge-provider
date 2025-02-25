@@ -1,6 +1,6 @@
+"use client";
 import SlickSlider from "./SlickSlider";
 import withPagination from "./WithPagination";
-
 
 export enum MEDIA_TYPE {
   Movie = "movie",

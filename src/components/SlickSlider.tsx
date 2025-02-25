@@ -1,13 +1,15 @@
+"use client";
 import Image from "./Image";
-import { Box, LinearProgress, Skeleton } from "@mui/material";
+import styled from "styled-components";
 import VideoJSPlayer from "./VideoJSPlayer";
+import { Box, Skeleton } from "@mui/material";
 import Slider, { Settings } from "react-slick";
 import React, { useState, useRef } from "react";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import styled from "styled-components";
-import VideoJSPlayer2 from "./VideoJSPlayer2";
-import Player from "video.js/dist/types/player";
+import VideoPlayer from "./VideoPlayerComponents/VideoPlayer";
+
+// const VideoJsPlayerComponent = lazy(() => import("./VideoJSPlayer"));
 
 export const LOCAL_BASE_URL = "https://web-api-staging.binge.buzz";
 
@@ -17,63 +19,67 @@ interface SlickSliderProps {
 }
 
 const Houdini = styled.div`
+  position: relative;
   width: 100%;
   overflow: hidden;
-  display: "flex";
+  display: flex;
   justify-content: center;
   border-radius: 16px;
+  padding: var(--border-size);
 
-  --border-size: 0.3rem;
+  --border-size: 0.1rem;
+  --border-opacity: 0; /* Initially invisible */
+
   border: var(--border-size) solid transparent;
+  background: rgb(255 255 255 / var(--opacity)) padding-box; /* Only inner content visible initially */
+  background-clip: padding-box, border-box;
 
   &:hover {
-    border-image: conic-gradient(
-        from var(--angle),
-        transparent 25%,
-        rgba(0, 0, 255, 0.5) 50%,
-        rgba(0, 0, 255, 0.9) 75%,
-        transparent 100%
-      )
-      1 stretch;
-    background: var(--gradient-border) border-box,
-      /* Gradient border */ rgb(255 255 255 / var(--opacity)) padding-box; /* Inner content with opacity */
+    --border-opacity: 1; /* Show border on hover */
 
-    @supports (background: paint(houdini)) {
-      @property --opacity {
-        syntax: "<number>";
-        initial-value: 0.5;
-        inherits: false;
-      }
+    background: conic-gradient(
+          from var(--angle),
+          transparent 25%,
+          rgba(254, 32, 32) 50%,
+          rgba(219, 0, 0) 75%,
+          transparent 100%
+        )
+        border-box,
+      rgb(255 255 255 / var(--opacity)) padding-box;
 
-      @property --angle {
-        syntax: "<angle>";
-        initial-value: 0deg;
-        inherits: false;
-      }
+    animation: rotate 4s linear infinite, opacityChange 3s infinite alternate;
+  }
 
-      @keyframes opacityChange {
-        to {
-          --opacity: 1;
-        }
-      }
+  @property --opacity {
+    syntax: "<number>";
+    initial-value: 0.5;
+    inherits: false;
+  }
 
-      @keyframes rotate {
-        to {
-          --angle: 360deg;
-        }
-      }
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
 
-      & /*.rainbow*/ {
-        animation: rotate 4s linear infinite,
-          opacityChange 3s infinite alternate;
-      }
-
-      /* Hide the warning */
-      .warning {
-        display: none;
-      }
+  @keyframes opacityChange {
+    to {
+      --opacity: 1;
     }
   }
+
+  @keyframes rotate {
+    to {
+      --angle: 360deg;
+    }
+  }
+`;
+
+const InnerContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  border-radius: 12px; /* Ensures inner content is also rounded */
+  overflow: hidden; /* Ensures content doesn't overflow the border */
 `;
 
 export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
@@ -82,6 +88,9 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [videoProgress, setVideoProgress] = useState<{ [key: string]: number }>(
+    {}
+  );
 
   function SampleNextArrow(props: any) {
     const { className, style, onClick } = props;
@@ -182,29 +191,15 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
     ],
   };
 
-  const ImageSlide = (item: any, index: number) => (
-    <Box sx={{ position: "relative" }}>
-      <Image
-        path={
-          item.image_landscape ||
-          item.image_portrait ||
-          item.image_square ||
-          item.thumb_path
-        }
-        sx={{
-          borderRadius: "16px",
-          width: "100%",
-          aspectRatio: "16/9",
-          objectFit: "contain",
-          cursor: "pointer",
-        }}
-        // pathRedirect={`https://binge.buzz/playing-vod/${item.id}`}
-        // onClick={() => {
-        //   window.location.assign(`https://binge.buzz/playing-vod/${item.id}`);
-        // }}
-      />
-    </Box>
-  );
+  const handleTimeUpdate = (videoId: string, currentTime: number) => {
+    setVideoProgress((prev) => ({ ...prev, [videoId]: currentTime }));
+  };
+
+  const handleVideoClick = (item: any) => {
+    // if (typeof window !== "undefined") {
+    //   window.location.assign(`https://binge.buzz/playing-vod/${item.id}`);
+    // }
+  };
 
   return (
     <Box sx={{ overflowX: "hidden", position: "relative" }}>
@@ -216,62 +211,154 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
           <Slider ref={sliderRef} {...settings}>
             {data.map((item, index) => {
               return (
-                <Houdini
-                  key={index}
-                  // onMouseEnter={() => {
-                  //   if (timerRef.current) clearTimeout(timerRef.current);
-                  //   setHoveredIndex(index);
+                <Houdini key={index}>
+                  <InnerContainer
+                    onMouseEnter={() => {
+                      if (activeSlideIndex === index) return;
+                      if (timerRef.current) clearTimeout(timerRef.current);
+                      setHoveredIndex(index);
 
-                  //   if (hoveredIndex !== index) {
-                  //     timerRef.current = setTimeout(() => {
-                  //       setActiveSlideIndex(index);
-                  //     }, 2000);
-                  //   }
-                  // }}
-                  // onMouseLeave={() => {
-                  //   if (timerRef.current) clearTimeout(timerRef.current);
-                  //   setHoveredIndex(null);
-                  // }}
-                >
-                  {isLoading ? (
-                    <Skeleton
-                      variant="rectangular"
-                      width="100%"
-                      height={250}
-                      sx={{
-                        bgcolor: "#F9F9FB",
-                        background:
-                          "linear-gradient(90deg, #F9F9FB 25%, #f2e8f2 50%, #F9F9FB 75%)",
-                        backgroundSize: "300% 100%",
-                        animation: "waveAnimation 2.8s ease-in-out infinite",
-                        "@keyframes waveAnimation": {
-                          "0%": { backgroundPosition: "100% 0" },
-                          "100%": { backgroundPosition: "-100% 0" },
-                        },
-                        borderRadius: 2,
-                      }}
-                    />
-                  ) : index !== activeSlideIndex ? (
-                    ImageSlide(item, index)
-                  ) : item.trailer_link ? (
-                    <VideoJSPlayer
-                      videoId={item.id}
-                      //@ts-ignore
-                      _hlsStreamUrl={item.trailer_link}
-                      isActive={index === activeSlideIndex}
-                      redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
-                    />
-                  ) : (
-                    // <VideoJSPlayer2
-                    //   //@ts-ignore
-                    //   playerRef={playerRef}
-                    //   videoId={item.id}
-                    //   _hlsStreamUrl={item.trailer_link}
-                    //   muted={true}
-                    //   isActive={index === activeSlideIndex}
-                    // />
-                    ImageSlide(item, index)
-                  )}
+                      if (hoveredIndex !== index) {
+                        setActiveSlideIndex(index);
+                      }
+                    }}
+                  >
+                    {
+                      isLoading ? (
+                        <Skeleton
+                          variant="rectangular"
+                          width="100%"
+                          height={250}
+                          sx={{
+                            bgcolor: "#F9F9FB",
+                            background:
+                              "linear-gradient(90deg, #F9F9FB 25%, #f2e8f2 50%, #F9F9FB 75%)",
+                            backgroundSize: "300% 100%",
+                            animation:
+                              "waveAnimation 2.8s ease-in-out infinite",
+                            "@keyframes waveAnimation": {
+                              "0%": { backgroundPosition: "100% 0" },
+                              "100%": { backgroundPosition: "-100% 0" },
+                            },
+                            borderRadius: 2,
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            position: "relative",
+                            width: "100%",
+                            aspectRatio: "16/9",
+                          }}
+                          onClick={() => handleVideoClick(item)}
+                        >
+                          {/* Image Component */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              transition: "opacity 0.8s ease-in-out",
+                              opacity: index === activeSlideIndex ? 0 : 1,
+                              zIndex: index === activeSlideIndex ? 0 : 1,
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Image
+                              path={
+                                item.image_landscape ||
+                                item.image_portrait ||
+                                item.image_square ||
+                                item.thumb_path
+                              }
+                              sx={{
+                                borderRadius: "16px",
+                                width: "100%",
+                                aspectRatio: "16/9",
+                                objectFit: "contain",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => {
+                                //   if (typeof window !== "undefined") {
+                                //     window.location.assign(
+                                //       `https://binge.buzz/playing-vod/${item.id}`
+                                //     );
+                                //   }
+                              }}
+                            />
+                          </Box>
+
+                          {/* VideoJSPlayer Component */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              transition: "opacity 0.8s ease-in-out",
+                              opacity: index === activeSlideIndex ? 1 : 0,
+                              zIndex: index === activeSlideIndex ? 1 : 0,
+                            }}
+                          >
+                            {/* <Suspense fallback={<div>Loading...</div>}> */}
+                            {/* <VideoJSPlayer
+                              videoId={item.id}
+                              //@ts-ignore
+                              _hlsStreamUrl={item.trailer_link}
+                              isActive={index === activeSlideIndex}
+                              path={
+                                item.image_landscape ||
+                                item.image_portrait ||
+                                item.image_square ||
+                                item.thumb_path
+                              }
+                              redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
+                              initialTime={videoProgress[item.id] || 0}
+                              onTimeUpdate={(time: any) =>
+                                handleTimeUpdate(item.id, time)
+                              }
+                            /> */}
+                            <VideoPlayer
+                              videoId={item.id}
+                              //@ts-ignore
+                              _hlsStreamUrl={item.trailer_link}
+                              isActive={index === activeSlideIndex}
+                              path={
+                                item.image_landscape ||
+                                item.image_portrait ||
+                                item.image_square ||
+                                item.thumb_path
+                              }
+                              redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
+                              initialTime={videoProgress[item.id] || 0}
+                              onTimeUpdate={(time: any) =>
+                                handleTimeUpdate(item.id, time)
+                              }
+                            />
+                            {/* </Suspense> */}
+                          </Box>
+                        </Box>
+                      )
+
+                      //   : index !== activeSlideIndex ? (
+                      //     ImageSlide(item, index)
+                      //   ) : (
+                      //     <VideoJSPlayer
+                      //       videoId={item.id}
+                      //       //@ts-ignore
+                      //       _hlsStreamUrl={item.trailer_link}
+                      //       isActive={index === activeSlideIndex}
+                      //       redirectPath={`https://binge.buzz/playing-vod/${item.id}`}
+                      //       style={{
+                      //         display: index === activeSlideIndex ? "block" : "none",
+                      //       }}
+                      //       initialTime={videoProgress[item.id] || 0}
+                      //       onTimeUpdate={(time: any) =>
+                      //         handleTimeUpdate(item.id, time)
+                      //       }
+                      //     />
+                      //   )
+                    }
+                  </InnerContainer>
                 </Houdini>
               );
             })}

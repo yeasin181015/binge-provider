@@ -1,19 +1,13 @@
-import { Box } from "@mui/material";
-import React, { LegacyRef, useEffect, useRef, useState } from "react";
+"use client";
+import Image from "./Image";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import MuteButton from "./VolumeButton";
 import Player from "video.js/dist/types/player";
 import { GetCookiesValue } from "../utils/cookie";
-import VolumeOffIcon from "@mui/icons-material/VolumeOff";
-import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import React, { LegacyRef, useEffect, useRef, useState } from "react";
 
 function checkLiveOrStage() {
-  // const env =
-  //   window.location.hostname === "pre.binge.buzz" ||
-  //   window.location.hostname.includes("localhost")
-  //     ? "staging"
-  //     : "production";
-  // return env;
   return "staging";
 }
 
@@ -52,19 +46,51 @@ function drmCall(bingeToken: string) {
   };
 }
 
+const checkValidSource = async (src: string): Promise<boolean> => {
+  if (!src) {
+    console.log("Source URL is invalid or missing.");
+    return false;
+  }
+  try {
+    const res = await fetch(src, { method: "HEAD" });
+    console.log(res, "fetch response");
+    return res.ok;
+  } catch (error) {
+    console.error("Error checking source", error);
+    return false;
+  }
+};
+
 const VideoJSPlayer = ({
   videoId,
   _hlsStreamUrl,
   isActive,
   redirectPath,
+  initialTime,
+  onTimeUpdate,
+  path,
 }: {
+  initialTime: number;
+  onTimeUpdate: (time: any) => void;
   videoId: number;
   _hlsStreamUrl: string;
   isActive: boolean;
   redirectPath: string;
+  path: string;
 }) => {
   const playerRef = useRef<Player | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+
+  const [isValid, setIsValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log(_hlsStreamUrl, "streamUrl");
+    const fetchValidSource = async () => {
+      const valid = await checkValidSource(_hlsStreamUrl);
+      setIsValid(valid); // Update state with the result
+    };
+
+    fetchValidSource();
+  }, [_hlsStreamUrl]);
 
   const handlePlayerReady = (player: Player | null) => {
     playerRef.current = player;
@@ -77,14 +103,6 @@ const VideoJSPlayer = ({
     player?.on("dispose", () => {
       videojs.log("player will dispose");
     });
-  };
-
-  const toggleMute = () => {
-    if (playerRef.current) {
-      const newMuteState = !playerRef.current.muted();
-      playerRef.current.muted(newMuteState);
-      setIsMuted(newMuteState);
-    }
   };
 
   const videoJsOptions = {
@@ -111,15 +129,28 @@ const VideoJSPlayer = ({
     ],
   };
 
-  const VideoPlayer = (props: { options: any; onReady: any }) => {
+  useEffect(() => {
+    if (playerRef.current && initialTime > 0) {
+      playerRef.current.currentTime(initialTime);
+    }
+  }, [initialTime]);
+
+  const VideoPlayer = (props: {
+    options: any;
+    onReady: any;
+    isValid: boolean;
+  }) => {
     const videoRef = useRef<HTMLElement | null>(null);
     const playerRef = useRef<Player | null>(null);
     const [playbackRate, setPlaybackRate] = useState(1);
     const { options, onReady } = props;
+    // const [isValidSource, setIsValidSource] = useState<boolean | null>(null);
 
     const bingeToken = GetCookiesValue("annonJwtToken", false);
 
     useEffect(() => {
+      if (!isValid || typeof window === "undefined") return;
+
       if (!playerRef.current) {
         const videoElement = document.createElement("video-js");
         videoElement.setAttribute("crossorigin", "anonymous");
@@ -136,18 +167,10 @@ const VideoJSPlayer = ({
             player.muted(true);
           }
         ));
-
-        player.on("loadeddata", () => {
-          console.log("Video.js has successfully loaded the video.");
-        });
-
         player.on("loadstart", function (_e: any) {
-          console.log("Video.js has started loading.");
           drmCall(bingeToken);
         });
-
-        player.on("error", function (error: any) {
-          console.error("Video js error", error);
+        player.on("error", function () {
           console.warn("Video.js encountered an error but will retry.");
           setTimeout(() => player.src(options.sources), 3000); // Retry after 3s
         });
@@ -157,11 +180,13 @@ const VideoJSPlayer = ({
         (playerRef.current as Player).autoplay(options.autoplay);
         player.src(options.sources);
       }
-    }, [options, videoRef]);
+    }, [options, videoRef, isValid]);
 
     useEffect(() => {
-      if (playerRef.current) {
-        playerRef?.current?.playbackRate(playbackRate);
+      if (typeof window !== "undefined") {
+        if (playerRef.current) {
+          playerRef?.current?.playbackRate(playbackRate);
+        }
       }
     }, [playbackRate]);
 
@@ -177,36 +202,39 @@ const VideoJSPlayer = ({
     }, [playerRef]);
 
     return (
-      <div style={{ position: "relative", width: "100%", height: "100%" }}>
-        <div data-vjs-player style={{ width: "100%", height: "100%" }}>
-          <div
-            style={{ borderRadius: "16px" }}
-            ref={videoRef as LegacyRef<HTMLDivElement> | undefined}
-          />
-        </div>
-
-        {/* Custom Mute Button */}
-        <button
-          onClick={toggleMute}
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            right: "10px",
-            background: "rgba(0, 0, 0, 0.6)",
-            border: "none",
-            borderRadius: "50%",
-            padding: "10px",
-            cursor: "pointer",
-          }}
-        >
-          {isMuted ? <VolumeOffIcon /> : <VolumeUpIcon />}
-        </button>
-      </div>
+      <>
+        {isValid ? (
+          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+            <div data-vjs-player style={{ width: "100%", height: "100%" }}>
+              <div ref={videoRef as LegacyRef<HTMLDivElement> | undefined} />
+            </div>{" "}
+            <MuteButton playerRef={playerRef} />
+          </div>
+        ) : (
+          <div>
+            <Image
+              path={path}
+              sx={{
+                borderRadius: "16px",
+                width: "100%",
+                aspectRatio: "16/9",
+                objectFit: "contain",
+                cursor: "pointer",
+              }}
+            />
+          </div>
+        )}
+      </>
     );
   };
+
   return (
     <div>
-      <VideoPlayer options={videoJsOptions} onReady={handlePlayerReady} />
+      <VideoPlayer
+        options={videoJsOptions}
+        onReady={handlePlayerReady}
+        isValid={isValid}
+      />
     </div>
   );
 };

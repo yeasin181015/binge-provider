@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import palette from "../theme/palette";
 import LandingComponent from "./LandingComponent";

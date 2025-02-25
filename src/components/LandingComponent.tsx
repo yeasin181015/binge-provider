@@ -1,3 +1,5 @@
+"use client";
+
 import Banner from "./Banner";
 import BingeSlider from "./BingleSlider";
 import { fetchImages } from "../apis/fetchImages";
@@ -21,7 +23,7 @@ const LandingComponent = () => {
       } catch (error) {
         console.error("Error fetching token or images:", error);
       } finally {
-          setIsLoading(false);
+        setIsLoading(false);
       }
     };
 

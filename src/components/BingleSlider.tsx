@@ -1,9 +1,11 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import WatchIcon from "../icons/WatchIcon";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
 import SliderRowForGenre from "./SliderRowForGenre";
 import { fetchCategories } from "../apis/fetchCategories";
+import VideoPlayer from "./VideoPlayerComponents/VideoPlayer";
 
 export interface CategoryProps {
   id?: number;
@@ -49,18 +51,33 @@ const BingeSlider = ({
 
   return (
     <Box sx={{ mt: "100px !important" }}>
-      {categories?.map((item: any, index: any) => (
-        <Box key={item.category_id} sx={{ mb: "50px" }}>
-          <SliderRowForGenre
+      {categories?.map((item: any, index: any) => {
+        console.log("item", item);
+        return (
+          <Box
             key={item.category_id}
-            isLoading={isLoading}
-            category={item}
-            type="cardWithHover"
-            visibleOverflow={true}
-            token={token ?? ""}
-          />
-        </Box>
-      ))}
+            sx={{ mb: categories.length > 1 ? "80px" : 0 }}
+          >
+            {categories.length > 1 && (
+              <Typography
+                className="watchnow-text"
+                sx={{ fontSize: "18px", mb: 1, fontWeight: "bold" }}
+              >
+                {item.name}
+              </Typography>
+            )}
+            <SliderRowForGenre
+              key={item.category_id}
+              isLoading={isLoading}
+              category={item}
+              type="cardWithHover"
+              visibleOverflow={true}
+              token={token ?? ""}
+            />
+          </Box>
+        );
+      })}
+      {/* <VideoPlayer /> */}
       <Button
         className="watchnow-text"
         sx={{
@@ -82,9 +99,9 @@ const BingeSlider = ({
             background: "#FF4A50",
           },
         }}
-        // onClick={() => {
-        //   window.location.assign("https://www.binge.buzz");
-        // }}
+        onClick={() => {
+          window.location.assign("https://www.binge.buzz");
+        }}
       >
         Watch Now
         <WatchIcon />

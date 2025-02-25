@@ -1,3 +1,4 @@
 import "./css/SlickSlider.css";
-export { default as BingeLandingPage } from "./components/BingeLandingPage";
+import BingeLandingPage from "./components//BingeLandingPage";
+export { BingeLandingPage };
 //# sourceMappingURL=index.d.ts.map
