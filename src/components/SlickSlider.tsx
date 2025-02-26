@@ -31,6 +31,10 @@ const Houdini = styled.div`
   border: var(--border-size) solid transparent;
   background: rgb(255 255 255 / var(--opacity)) padding-box; /* Only inner content visible initially */
   background-clip: padding-box, border-box;
+  transition: background 1s ease, border 1s ease; /* Smooth transition for background and border */
+
+  /* Set z-index for the border (gradient) to be below the content */
+  z-index: 1;
 
   &:hover {
     --border-opacity: 1; /* Show border on hover */
@@ -45,7 +49,8 @@ const Houdini = styled.div`
         border-box,
       rgb(255 255 255 / var(--opacity)) padding-box;
 
-    animation: rotate 4s linear infinite, opacityChange 3s infinite alternate;
+    animation: rotate 4s linear infinite, opacityChange 3s infinite alternate,
+      borderDisappear 3s forwards;
   }
 
   @property --opacity {
@@ -71,6 +76,25 @@ const Houdini = styled.div`
       --angle: 360deg;
     }
   }
+
+  @keyframes borderDisappear {
+    0% {
+      --border-opacity: 1;
+      background: conic-gradient(
+            from var(--angle),
+            transparent 25%,
+            rgba(254, 32, 32) 50%,
+            rgba(219, 0, 0) 75%,
+            transparent 100%
+          )
+          border-box,
+        rgb(255 255 255 / var(--opacity)) padding-box;
+    }
+    100% {
+      --border-opacity: 0;
+      background: rgb(255 255 255 / var(--opacity)) padding-box; /* Remove the gradient gradually */
+    }
+  }
 `;
 
 const InnerContainer = styled.div`
@@ -78,6 +102,10 @@ const InnerContainer = styled.div`
   height: 100%;
   border-radius: 12px; /* Ensures inner content is also rounded */
   overflow: hidden; /* Ensures content doesn't overflow the border */
+
+  /* Ensure image appears above the background gradient */
+  position: relative;
+  z-index: 2;
 `;
 
 export default function SlickSlider({ data, isLoading }: SlickSliderProps) {

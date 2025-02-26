@@ -72,12 +72,15 @@ const VideoJSPlayer = ({
   const playerRef = useRef<Plyr | null>(null);
 
   const [isValid, setIsValid] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const bingeToken = GetCookiesValue("annonJwtToken", false);
 
   useEffect(() => {
     const fetchValidSource = async () => {
       const valid = await checkValidSource(_hlsStreamUrl);
-      setIsValid(valid);
+      setTimeout(() => {
+        setIsValid(valid);
+      }, 1000);
     };
     fetchValidSource();
   }, [_hlsStreamUrl]);
@@ -113,9 +116,22 @@ const VideoJSPlayer = ({
       hls.loadSource(_hlsStreamUrl);
       hls.attachMedia(video);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      // video.oncanplay = () => {
+      //   console.log("Video is ready to play! Setting isVideoReady = true");
+      //   setIsReady(true);
+      // };
+
+      hls.on(Hls.Events.MANIFEST_PARSED, async () => {
         if (initialTime > 0) {
           player.currentTime = initialTime;
+        }
+        if (isActive) {
+          try {
+            await player.play();
+            console.log("Autoplay started!");
+          } catch (error) {
+            console.warn("Autoplay blocked by browser", error);
+          }
         }
       });
 
@@ -132,8 +148,19 @@ const VideoJSPlayer = ({
     };
   }, [isValid, _hlsStreamUrl]);
 
+  useEffect(() => {
+    if (isActive && playerRef.current) {
+      const playPromise = playerRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.warn("Autoplay blocked on hover", error);
+        });
+      }
+    }
+  }, [isActive]);
+
   return (
-    <div>
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
       {isValid ? (
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
           <video
@@ -141,6 +168,7 @@ const VideoJSPlayer = ({
             crossOrigin="anonymous"
             className="plyr"
             muted
+            style={{ width: "100%", minHeight: "280px", objectFit: "cover" }}
           />
         </div>
       ) : (

@@ -31082,11 +31082,14 @@ const VideoJSPlayer = ({ videoId, _hlsStreamUrl, isActive, redirectPath, initial
     const videoRef = React.useRef(null);
     const playerRef = React.useRef(null);
     const [isValid, setIsValid] = React.useState(false);
+    React.useState(false);
     const bingeToken = GetCookiesValue("annonJwtToken", false);
     React.useEffect(() => {
         const fetchValidSource = async () => {
             const valid = await checkValidSource(_hlsStreamUrl);
-            setIsValid(valid);
+            setTimeout(() => {
+                setIsValid(valid);
+            }, 1000);
         };
         fetchValidSource();
     }, [_hlsStreamUrl]);
@@ -31118,9 +31121,22 @@ const VideoJSPlayer = ({ videoId, _hlsStreamUrl, isActive, redirectPath, initial
             });
             hls.loadSource(_hlsStreamUrl);
             hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            // video.oncanplay = () => {
+            //   console.log("Video is ready to play! Setting isVideoReady = true");
+            //   setIsReady(true);
+            // };
+            hls.on(Hls.Events.MANIFEST_PARSED, async () => {
                 if (initialTime > 0) {
                     player.currentTime = initialTime;
+                }
+                if (isActive) {
+                    try {
+                        await player.play();
+                        console.log("Autoplay started!");
+                    }
+                    catch (error) {
+                        console.warn("Autoplay blocked by browser", error);
+                    }
                 }
             });
             hls.on(Hls.Events.ERROR, (_, data) => {
@@ -31134,7 +31150,17 @@ const VideoJSPlayer = ({ videoId, _hlsStreamUrl, isActive, redirectPath, initial
             player.destroy();
         };
     }, [isValid, _hlsStreamUrl]);
-    return (require$$2$1.jsx("div", { children: isValid ? (require$$2$1.jsx("div", { style: { position: "relative", width: "100%", height: "100%" }, children: require$$2$1.jsx("video", { ref: videoRef, crossOrigin: "anonymous", className: "plyr", muted: true }) })) : (require$$2$1.jsx(Image$1, { path: path, sx: {
+    React.useEffect(() => {
+        if (isActive && playerRef.current) {
+            const playPromise = playerRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((error) => {
+                    console.warn("Autoplay blocked on hover", error);
+                });
+            }
+        }
+    }, [isActive]);
+    return (require$$2$1.jsx("div", { style: { position: "relative", width: "100%", height: "100%" }, children: isValid ? (require$$2$1.jsx("div", { style: { position: "relative", width: "100%", height: "100%" }, children: require$$2$1.jsx("video", { ref: videoRef, crossOrigin: "anonymous", className: "plyr", muted: true, style: { width: "100%", minHeight: "280px", objectFit: "cover" } }) })) : (require$$2$1.jsx(Image$1, { path: path, sx: {
                 borderRadius: "16px",
                 width: "100%",
                 aspectRatio: "16/9",
