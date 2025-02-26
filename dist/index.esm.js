@@ -31063,6 +31063,7 @@ const VideoJSPlayer = ({ videoId, _hlsStreamUrl, isActive, redirectPath, initial
     const playerRef = useRef(null);
     const [isValid, setIsValid] = useState(false);
     const bingeToken = GetCookiesValue("annonJwtToken", false);
+    console.log('consoliiiing--------------------', isActive, _hlsStreamUrl);
     useEffect(() => {
         const fetchValidSource = async () => {
             const valid = await checkValidSource(_hlsStreamUrl);
@@ -31113,7 +31114,7 @@ const VideoJSPlayer = ({ videoId, _hlsStreamUrl, isActive, redirectPath, initial
         return () => {
             player.destroy();
         };
-    }, [isValid, _hlsStreamUrl]);
+    }, [isValid, _hlsStreamUrl, isActive]);
     return (jsx$1("div", { children: isValid ? (jsx$1("div", { style: { position: "relative", width: "100%", height: "100%" }, children: jsx$1("video", { ref: videoRef, crossOrigin: "anonymous", className: "plyr", muted: true }) })) : (jsx$1(Image$1, { path: path, sx: {
                 borderRadius: "16px",
                 width: "100%",
@@ -31357,6 +31358,7 @@ function SlickSlider({ data, isLoading }) {
                                         position: "relative",
                                         width: "100%",
                                         aspectRatio: "16/9",
+                                        backgroundColor: "#FFFFFF",
                                     }, children: [jsx$1(Box$1, { sx: {
                                                 position: "absolute",
                                                 width: "100%",

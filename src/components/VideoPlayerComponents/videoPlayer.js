@@ -21,4 +21,3 @@ document.addEventListener("DOMContentLoaded", () => {
   
     window.player = player;
   });
-  

@@ -245,6 +245,7 @@ export default function SlickSlider({ data, isLoading }: SlickSliderProps) {
                           position: "relative",
                           width: "100%",
                           aspectRatio: "16/9",
+                          backgroundColor: "#FFFFFF",
                         }}
                       >
                         {/* Image Component */}

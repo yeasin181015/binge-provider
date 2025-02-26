@@ -74,6 +74,8 @@ const VideoJSPlayer = ({
   const [isValid, setIsValid] = useState(false);
   const bingeToken = GetCookiesValue("annonJwtToken", false);
 
+  console.log('consoliiiing--------------------', isActive, _hlsStreamUrl);
+
   useEffect(() => {
     const fetchValidSource = async () => {
       const valid = await checkValidSource(_hlsStreamUrl);
